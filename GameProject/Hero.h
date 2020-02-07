@@ -1,6 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+const float heroScale = 10.0;
+const int speedHero = 300;
+
+
 using namespace sf;
 
 class Hero
@@ -10,9 +14,10 @@ private:
 
 	Vector2f m_Position;
 
-	Sprite m_Sprite;
+	ConvexShape m_convex;
 
 	Texture m_Texture;
+	const Texture* m_ptrTexture;
 
 	// Логические переменные для отслеживания направления движения
 	bool m_LeftPressed;
@@ -28,8 +33,6 @@ public:
 
 	Hero();
 
-	// Для отправки спрайта в главную функцию
-	Sprite getSprite();
 
 	// Для движения
 	void moveLeft();
@@ -51,5 +54,10 @@ public:
 
 	// Эта функция будет вызываться на каждый кадр
 	void update(float elapsedTime);
+
+	/// Перемещаем фигуру героя
+	void changePosition();
+
+	ConvexShape getHeroConvex();
 
 };

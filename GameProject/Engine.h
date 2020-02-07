@@ -3,8 +3,7 @@
 #include "Hero.h";
 
 
-const float heroScale = 10.0;
-const float enemyScale = 10.0;
+
 
 
 using namespace sf;

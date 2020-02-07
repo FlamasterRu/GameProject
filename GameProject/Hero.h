@@ -12,7 +12,7 @@ class Hero
 
 private:
 
-	Vector2f m_Position;
+	Vector2f m_Position;  ////  оординаты левого верхнего угла примоугольника, который описывает фигурку геро€
 
 	ConvexShape m_convex;
 

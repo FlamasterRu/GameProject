@@ -13,8 +13,8 @@ Hero::Hero()
 	
 
 	// ”станавливаем начальную позицию Ѕоба в пиксел€х
-	m_Position.x = 200;
-	m_Position.y = 200;
+	m_Position.x = 450;
+	m_Position.y = 400;
 
 	m_BotPressed = false;
 	m_TopPressed = false;
@@ -43,7 +43,7 @@ void Hero::changePosition()
 
 
 	m_convex.setTexture(m_ptrTexture);
-	m_convex.setFillColor(Color::White);
+	m_convex.setFillColor(Color(255, 150, 0));
 	m_convex.setPosition(m_Position.x, m_Position.y);
 }
 
@@ -98,25 +98,44 @@ void Hero::stopBot()
 // ƒвигаем на основании пользовательского ввода в этом кадре, прошедшего времени и скорости
 void Hero::update(float elapsedTime)
 {
+	float xMax = VideoMode::getDesktopMode().width;
+	float yMax = VideoMode::getDesktopMode().height;
 	if (m_RightPressed)
 	{
-		m_Position.x += m_Speed * elapsedTime;
+		if (m_Position.x + m_Speed * elapsedTime < 930)
+		{
+			m_Position.x += m_Speed * elapsedTime;
+		}
 	}
 
 	if (m_LeftPressed)
 	{
-		m_Position.x -= m_Speed * elapsedTime;
+		if (m_Position.x - m_Speed * elapsedTime > 0)
+		{
+			m_Position.x -= m_Speed * elapsedTime;
+		}
 	}
 
 	if (m_TopPressed)
 	{
-		m_Position.y -= m_Speed * elapsedTime;
+		if (m_Position.y - m_Speed * elapsedTime > 290)
+		{
+			m_Position.y -= m_Speed * elapsedTime;
+		}
 	}
 
 	if (m_BotPressed)
 	{
-		m_Position.y += m_Speed * elapsedTime;
+		if (m_Position.y + m_Speed * elapsedTime < 490)
+		{
+			m_Position.y += m_Speed * elapsedTime;
+		}
 	}
+
+
+
+	// „тобы не выходил за пределы монитора                     //// –азобратьс€ почему фактическое разрешение меньше, чем считываетс€!!!!!!!!!!!!!!!!!!!!!!!
+	/// ¬озможно что-то не так с пропорцией перемещени€ выше
 
 	// перемещаем фигуру геро€
 	changePosition();

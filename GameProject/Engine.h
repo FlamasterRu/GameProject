@@ -2,6 +2,11 @@
 #include <SFML/Graphics.hpp>
 #include "Hero.h";
 
+
+const float heroScale = 10.0;
+const float enemyScale = 10.0;
+
+
 using namespace sf;
 
 class Engine
@@ -10,7 +15,7 @@ private:
 
 	RenderWindow m_Window;
 
-	ContextSettings m_Setting;
+	ContextSettings m_Setting;   /// для сглаживания 
 
 	Sprite m_BackgroundSprite;
 

@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Draw.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Hero.h">
@@ -40,6 +43,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Engine.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

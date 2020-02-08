@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 
 const float heroScale = 10.0;
-const int speedHero = 300;
+const int heroSpeed = 300;
 
 
 using namespace sf;

@@ -3,16 +3,16 @@
 Hero::Hero()
 {
 	// Вписываем в переменную скорость
-	m_Speed = speedHero;
+	m_Speed = heroSpeed;
 
-	// Связываем текстуру и спрайт
+	// Загрузка текстуры из папки, в которой исполняемый файл
 	m_Texture.loadFromFile("hero.jpg");
 
 	m_ptrTexture = &m_Texture;
 
 	
 
-	// Устанавливаем начальную позицию Боба в пикселях
+	// Устанавливаем начальную позицию в пикселях
 	m_Position.x = 450;
 	m_Position.y = 400;
 
@@ -98,11 +98,10 @@ void Hero::stopBot()
 // Двигаем на основании пользовательского ввода в этом кадре, прошедшего времени и скорости
 void Hero::update(float elapsedTime)
 {
-	float xMax = VideoMode::getDesktopMode().width;
-	float yMax = VideoMode::getDesktopMode().height;
 	if (m_RightPressed)
 	{
-		if (m_Position.x + m_Speed * elapsedTime < 930)
+		if (m_Position.x + m_Speed * elapsedTime < 925)    	// Чтобы не выходил за пределы монитора. Фактический размер, который отрисовывает библиотека в 2 раза меньше разрешения экрана
+
 		{
 			m_Position.x += m_Speed * elapsedTime;
 		}
@@ -133,9 +132,6 @@ void Hero::update(float elapsedTime)
 	}
 
 
-
-	// Чтобы не выходил за пределы монитора                     //// Разобраться почему фактическое разрешение меньше, чем считывается!!!!!!!!!!!!!!!!!!!!!!!
-	/// Возможно что-то не так с пропорцией перемещения выше
 
 	// перемещаем фигуру героя
 	changePosition();

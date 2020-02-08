@@ -25,6 +25,26 @@ Engine::Engine()
 
 	m_BackgroundSprite.setTexture(m_BackgroundTexture);
 
+	e_Enemy = new Enemy[numEnemy * lineEnemy];
+	for (int j = 0; j < lineEnemy; ++j)
+	{
+		for (int i = 0; i < numEnemy; ++i)
+		{
+			e_Enemy[i + j * numEnemy].setPositionX(i * 40 + 100);
+			e_Enemy[i + j * numEnemy].setPositionY(j * 50 + 20);
+			e_Enemy[i + j * numEnemy].setMaxPositionY(360);
+			e_Enemy[i + j * numEnemy].setMinPositionY(0);
+			e_Enemy[i + j * numEnemy].setMaxPositionX(i * 40 + 100 + 300);
+			e_Enemy[i + j * numEnemy].setMinPositionX(i * 40 + 100);
+		}
+	}
+
+}
+
+
+Engine::~Engine()
+{
+	delete[] e_Enemy;
 }
 
 void Engine::start()
@@ -39,8 +59,15 @@ void Engine::start()
 
 		float dtAsSeconds = dt.asSeconds();
 
-		input();
-		update(dtAsSeconds);
-		draw();
+		try
+		{
+			input();
+			update(dtAsSeconds);
+			draw();
+		}
+		catch (...)
+		{
+			m_Window.close();
+		}
 	}
 }

@@ -1,9 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Hero.h";
+#include "Enemy.h"
 
 
-
+const int numEnemy = 10;
+const int lineEnemy = 3;
 
 
 using namespace sf;
@@ -21,6 +23,7 @@ private:
 	Texture m_BackgroundTexture;
 
 	Hero m_Hero;
+	Enemy* e_Enemy;
 
 
 
@@ -31,6 +34,7 @@ private:
 public:
 
 	Engine();
+	~Engine();
 
 	// Функция старт вызовет все приватные функции
 	void start();

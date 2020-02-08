@@ -163,10 +163,12 @@
     <ClCompile Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Hero.cpp" />
     <ClCompile Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Update.cpp" />
     <ClCompile Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\UserInput.cpp" />
+    <ClCompile Include="Enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Engine.h" />
     <ClInclude Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Hero.h" />
+    <ClInclude Include="Enemy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

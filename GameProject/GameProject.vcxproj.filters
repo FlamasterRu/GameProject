@@ -36,6 +36,9 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Laser.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Nikita%27s files\vs\GameProject\GameProject\Hero.h">
@@ -45,6 +48,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Laser.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>

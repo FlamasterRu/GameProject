@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Laser.h"
 
 const float heroScale = 10.0;
 const int heroSpeed = 300;

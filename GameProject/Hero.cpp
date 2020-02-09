@@ -10,7 +10,10 @@ Hero::Hero()
 
 	m_ptrTexture = &m_Texture;
 
-	
+	for (int i = 0; i < numLaser; ++i)
+	{
+		m_laser[i] = nullptr;
+	}
 
 	// ”станавливаем начальную позицию в пиксел€х
 	m_Position.x = 450;
@@ -20,6 +23,11 @@ Hero::Hero()
 	m_TopPressed = false;
 	m_LeftPressed = false;
 	m_RightPressed = false;
+	m_GoFire = false;
+
+	m_lastFire = 10.0;
+	
+	m_health = 3;
 
 }
 
@@ -95,12 +103,25 @@ void Hero::stopBot()
 	m_BotPressed = false;
 }
 
-// ƒвигаем на основании пользовательского ввода в этом кадре, прошедшего времени и скорости
-void Hero::update(float elapsedTime)
+void Hero::goFire()
 {
+	m_GoFire = true;
+}
+
+void Hero::stopFire()
+{
+	m_GoFire = false;
+}
+
+// ƒвигаем на основании пользовательского ввода в этом кадре, прошедшего времени и скорости
+void Hero::update(float elapsedTime, Clock clock)
+{
+	float maxX = VideoMode::getDesktopMode().width / 2.07;     ///// не знаю почему но фактические размеры в столько то раз меньше
+	float maxY = VideoMode::getDesktopMode().height / 2.2;
+
 	if (m_RightPressed)
 	{
-		if (m_Position.x + m_Speed * elapsedTime < 925)    	// „тобы не выходил за пределы монитора. ‘актический размер, который отрисовывает библиотека в 2 раза меньше разрешени€ экрана
+		if (m_Position.x + m_Speed * elapsedTime < maxX)    	// „тобы не выходил за пределы монитора. ‘актический размер, который отрисовывает библиотека в 2 раза меньше разрешени€ экрана
 
 		{
 			m_Position.x += m_Speed * elapsedTime;
@@ -125,15 +146,78 @@ void Hero::update(float elapsedTime)
 
 	if (m_BotPressed)
 	{
-		if (m_Position.y + m_Speed * elapsedTime < 490)
+		if (m_Position.y + m_Speed * elapsedTime < maxY)
 		{
 			m_Position.y += m_Speed * elapsedTime;
 		}
 	}
 
-
+	m_lastFire += elapsedTime;
+	if (m_GoFire)
+	{
+		if (m_lastFire > 1.0)
+		{
+			fire();
+			m_lastFire = 0;
+		}
+	}
 
 	// перемещаем фигуру геро€
 	changePosition();
 
+
+
 }
+
+
+
+void Hero::fire()
+{
+	int freeLaser = 0, i = 0;
+	for (i = 0; i < numLaser; ++i)
+	{
+		if (m_laser[i] == nullptr)
+		{
+			++freeLaser;                  //////////////////// считаем сколько выстрелов можно сделать до переполнени€ буфера лазеров
+		}
+	}
+	if (freeLaser <= 0)
+	{
+		throw("End laser buffer");
+	}
+	else
+	{
+		for (i = 0; m_laser[i] != nullptr; ++i);
+		Vector2f temp;
+		temp.x = m_Position.x*2 + 3.1 * heroScale;
+		temp.y = m_Position.y*2;
+		m_laser[i] = new Laser(temp);
+		temp.y = m_Position.y * 2 - m_laser[i]->getLaserSprite().getTexture()->getSize().y;
+		m_laser[i]->setPosition(temp);
+	}
+
+}
+
+
+
+
+
+
+Laser* Hero::getLaser(int num)
+{
+	return m_laser[num];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

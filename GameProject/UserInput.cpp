@@ -43,5 +43,19 @@ void Engine::input()
 	else
 	{
 		m_Hero.stopBot();
+	}     
+
+
+	//// Клавиши стрельбы
+
+	if (Keyboard::isKeyPressed(Keyboard::Space))
+	{
+		m_Hero.goFire();
 	}
+	else
+	{
+		m_Hero.stopFire();
+	}
+
+
 }

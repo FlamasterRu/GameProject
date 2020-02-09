@@ -28,7 +28,7 @@ private:
 
 
 	void input();
-	void update(float dtAsSeconds);
+	void update(float dtAsSeconds, Clock clock);
 	void draw();
 
 public:
@@ -38,5 +38,7 @@ public:
 
 	// Функция старт вызовет все приватные функции
 	void start();
+
+	void check();
 
 };

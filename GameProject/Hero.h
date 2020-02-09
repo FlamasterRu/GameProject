@@ -4,6 +4,7 @@
 
 const float heroScale = 10.0;
 const int heroSpeed = 300;
+const int numLaser = 1000;    /// максимальное количество лазеров на экране
 
 
 using namespace sf;
@@ -20,14 +21,21 @@ private:
 	Texture m_Texture;
 	const Texture* m_ptrTexture;
 
+	Laser* m_laser[numLaser];
+
+	int m_health;
+
 	// Логические переменные для отслеживания направления движения
 	bool m_LeftPressed;
 	bool m_RightPressed;
 	bool m_TopPressed;
 	bool m_BotPressed;
+	bool m_GoFire;
 
 	// Скорость в пикселях в секунду
 	float m_Speed;
+
+	float m_lastFire;
 
 
 public:
@@ -54,11 +62,19 @@ public:
 	void stopBot();
 
 	// Эта функция будет вызываться на каждый кадр
-	void update(float elapsedTime);
+	void update(float elapsedTime, Clock clock);
 
 	/// Перемещаем фигуру героя
 	void changePosition();
 
 	ConvexShape getHeroConvex();
+
+	void fire();
+
+	Laser* getLaser(int num);
+
+	void goFire();
+	
+	void stopFire();
 
 };

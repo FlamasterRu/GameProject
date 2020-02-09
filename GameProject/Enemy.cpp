@@ -57,7 +57,7 @@ void Enemy::changePosition()
 	if (e_Position.y > e_MaxPosition.y)
 	{
 		///// Поражение.  
-		throw("lose");
+		//throw("lose");
 	}
 
 	e_Convex.setPointCount(11);

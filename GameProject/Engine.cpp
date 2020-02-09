@@ -62,7 +62,7 @@ void Engine::start()
 		try
 		{
 			input();
-			update(dtAsSeconds);
+			update(dtAsSeconds, clock);
 			draw();
 		}
 		catch (...)
@@ -71,3 +71,28 @@ void Engine::start()
 		}
 	}
 }
+
+
+
+
+void Engine::check()
+{
+	////// проверка на вылет лазера и попадание, а также на столкновение героя с мобами
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

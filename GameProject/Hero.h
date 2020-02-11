@@ -3,7 +3,7 @@
 #include "Laser.h"
 
 const int heroSpeed = 400;
-const int numLaser = 1000;    /// максимальное количество лазеров на экране
+const int numLaser = 50;    /// максимальное количество лазеров на экране
 
 
 using namespace sf;

@@ -4,6 +4,9 @@
 #include "Enemy.h"
 
 
+
+
+
 const int numEnemy = 10;
 const int lineEnemy = 3;
 
@@ -23,13 +26,16 @@ private:
 	Texture m_BackgroundTexture;
 
 	Hero m_Hero;
-	Enemy* e_Enemy;
+	Enemy* m_Enemy[numEnemy * lineEnemy];
+
+	int m_NumberAliveEnemy;
 
 
 
 	void input();
-	void update(float dtAsSeconds, Clock clock);
+	void update(float dtAsSeconds);
 	void draw();
+	void check();
 
 public:
 
@@ -38,7 +44,5 @@ public:
 
 	// Функция старт вызовет все приватные функции
 	void start();
-
-	void check();
 
 };

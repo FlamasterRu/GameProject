@@ -8,11 +8,14 @@ void Engine::draw()
 
 	m_Window.draw(m_BackgroundSprite);
 
-	m_Window.draw(m_Hero.getHeroConvex());  //// рисуем фигуру героя
+	m_Window.draw(m_Hero.getHeroSprite());  //// рисуем фигуру героя
 	
 	for (int i = 0; i < numEnemy * lineEnemy; ++i)   /// рисует врагов 
 	{
-		m_Window.draw(e_Enemy[i].getEnemyConvex());
+		if (m_Enemy[i] != nullptr)
+		{
+			m_Window.draw(m_Enemy[i]->getEnemySprite());
+		}
 	}
 
 	for (int i = 0; i < numLaser; ++i)

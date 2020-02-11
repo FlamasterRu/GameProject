@@ -2,13 +2,16 @@
 
 using namespace sf;
 
-void Engine::update(float dtAsSeconds, Clock clock)
+void Engine::update(float dtAsSeconds)
 {
-	m_Hero.update(dtAsSeconds, clock);
+	m_Hero.update(dtAsSeconds);
 
 	for (int i = 0; i < numEnemy * lineEnemy; ++i)
 	{
-		e_Enemy[i].update(dtAsSeconds);
+		if (m_Enemy[i] != nullptr)
+		{
+			m_Enemy[i]->update(dtAsSeconds);
+		}
 	}
 	for (int i = 0; i < numLaser; ++i)
 	{

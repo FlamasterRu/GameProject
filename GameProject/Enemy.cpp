@@ -4,28 +4,27 @@
 Enemy::Enemy()
 {
 
-	e_SpeedX = enemySpeedX;
-	e_SpeedY = enemySpeedY;
+	e_Speed.x = enemySpeedX;
+	e_Speed.y = enemySpeedY;
 	
 
 	e_Position.x = 0;
 	e_Position.y = 0;
 
-	e_MaxPosition.x = 0;
-	e_MaxPosition.y = 0;
+	e_XRange.x = 0;
+	e_XRange.y = 0;
 
-	e_MinPosition.x = 0;
-	e_MinPosition.y = 0;
+	e_YRange.x = 0;
+	e_YRange.y = 0;
 
 	e_Health = 1;
 	e_Damage = 1;
 
 
 	// Загрузка текстуры из папки, в которой исполняемый файл
-	e_Texture.loadFromFile("hero.jpg");
-	e_ptrTexture = &e_Texture;
+	e_Texture.loadFromFile("Enemy.png");    //// 70*70  размер в пикселях
 
-
+	e_Sprite.setTexture(e_Texture);
 
 }
 
@@ -33,72 +32,15 @@ Enemy::Enemy()
 
 
 
-void Enemy::update(float elapsedTime)
+void Enemy::setPosition(Vector2f position)
 {
-	e_Position.x += e_SpeedX * elapsedTime;
-	e_Position.y += e_SpeedY * elapsedTime;
-
-	changePosition();
+	e_Position = position;
 }
 
 
-void Enemy::changePosition()
-{
-	if (e_Position.x < e_MaxPosition.x)
-	{
-		e_SpeedX *= -1;    /// Если дошёл до края - разворачиваем моба
-	}
-
-	if (e_Position.x > e_MinPosition.x)
-	{
-		e_SpeedX *= -1;    /// Если дошёл до края - разворачиваем моба
-	}
-
-	if (e_Position.y > e_MaxPosition.y)
-	{
-		///// Поражение.  
-		//throw("lose");
-	}
-
-	e_Convex.setPointCount(11);
-	e_Convex.setPoint(0, Vector2f(e_Position.x + 0.0 * enemyScale, e_Position.y + 1.0 * enemyScale));
-	e_Convex.setPoint(1, Vector2f(e_Position.x + 1.0 * enemyScale, e_Position.y + 1.0 * enemyScale));
-	e_Convex.setPoint(2, Vector2f(e_Position.x + 1.0 * enemyScale, e_Position.y + 0.0 * enemyScale));
-	e_Convex.setPoint(3, Vector2f(e_Position.x + 2.0 * enemyScale, e_Position.y + 0.0 * enemyScale));
-	e_Convex.setPoint(4, Vector2f(e_Position.x + 2.0 * enemyScale, e_Position.y + 1.0 * enemyScale));
-	e_Convex.setPoint(5, Vector2f(e_Position.x + 4.0 * enemyScale, e_Position.y + 1.0 * enemyScale));
-	e_Convex.setPoint(6, Vector2f(e_Position.x + 4.0 * enemyScale, e_Position.y + 0.0 * enemyScale));
-	e_Convex.setPoint(7, Vector2f(e_Position.x + 5.0 * enemyScale, e_Position.y + 0.0 * enemyScale));
-	e_Convex.setPoint(8, Vector2f(e_Position.x + 5.0 * enemyScale, e_Position.y + 1.0 * enemyScale));
-	e_Convex.setPoint(9, Vector2f(e_Position.x + 6.0 * enemyScale, e_Position.y + 1.0 * enemyScale));
-	e_Convex.setPoint(10, Vector2f(e_Position.x + 3.0 * enemyScale, e_Position.y + 7.0 * enemyScale));
-
-
-
-	e_Convex.setTexture(e_ptrTexture);
-	e_Convex.setFillColor(Color::Red);
-	e_Convex.setPosition(e_Position.x, e_Position.y);
-
-}
-
-
-
-ConvexShape Enemy::getEnemyConvex()
-{
-	return e_Convex;
-}
-
-
-
-
-void Enemy::setPositionX(float x)
+void Enemy::setPosition(float x, float y)
 {
 	e_Position.x = x;
-}
-
-
-void Enemy::setPositionY(float y)
-{
 	e_Position.y = y;
 }
 
@@ -115,28 +57,93 @@ void Enemy::setHealth(int health)
 }
 
 
-void Enemy::setMaxPositionX(float x)
+void Enemy::setXRange(Vector2f xRange)
 {
-	e_MaxPosition.x = x;
+	e_XRange = xRange;
 }
 
 
-void Enemy::setMaxPositionY(float y)
+void Enemy::setXRange(float xLeft, float xRight)
 {
-	e_MaxPosition.y = y;
+	e_XRange.x = xLeft;
+	e_XRange.y = xRight;
 }
 
 
-void Enemy::setMinPositionX(float x)
+void Enemy::setYRange(Vector2f yRange)
 {
-	e_MinPosition.x = x;
+	e_YRange = yRange;
 }
 
 
-void Enemy::setMinPositionY(float y)
+void Enemy::setYRange(float yLeft, float yRight)
 {
-	e_MinPosition.y = y;
+	e_YRange.x = yLeft;
+	e_YRange.y = yRight;
 }
+
+
+
+
+
+Vector2f Enemy::getPosition()
+{
+	return e_Position;
+}
+
+
+Sprite Enemy::getEnemySprite()
+{
+	return e_Sprite;
+}
+
+
+
+
+void Enemy::update(float elapsedTime)
+{
+	e_Position.x += e_Speed.x * elapsedTime;
+	e_Position.y += e_Speed.y * elapsedTime;
+
+	if (e_Position.x < e_XRange.x)
+	{
+		e_Speed.x *= -1;    /// Если дошёл правого до края - разворачиваем моба
+	}
+
+	if (e_Position.x > e_XRange.y)
+	{
+		e_Speed.x *= -1;    /// Если дошёл левого до края - разворачиваем моба
+	}
+
+	if (e_Position.y > e_YRange.y)
+	{
+		///// Поражение.  
+		//throw("lose");
+	}
+
+	e_Sprite.setPosition(e_Position);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

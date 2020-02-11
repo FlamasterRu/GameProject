@@ -6,9 +6,10 @@ Hero::Hero()
 	m_Speed = heroSpeed;
 
 	// Загрузка текстуры из папки, в которой исполняемый файл
-	m_Texture.loadFromFile("hero.jpg");
+	m_Texture.loadFromFile("Hero.png");    ////  70*100 размер в пикселях
 
-	m_ptrTexture = &m_Texture;
+	m_Sprite.setTexture(m_Texture);
+
 
 	for (int i = 0; i < numLaser; ++i)
 	{
@@ -16,8 +17,8 @@ Hero::Hero()
 	}
 
 	// Устанавливаем начальную позицию в пикселях
-	m_Position.x = 450;
-	m_Position.y = 400;
+	m_Position.x = 925;
+	m_Position.y = 800;
 
 	m_BotPressed = false;
 	m_TopPressed = false;
@@ -25,41 +26,24 @@ Hero::Hero()
 	m_RightPressed = false;
 	m_GoFire = false;
 
-	m_lastFire = 10.0;
+	m_LastFire = 1000.0;
 	
-	m_health = 3;
+	m_Health = 3;
 
 }
 
-
-void Hero::changePosition()
+Hero::~Hero()
 {
-	m_convex.setPointCount(13);
-	m_convex.setPoint(0, Vector2f(m_Position.x + 0.0 * heroScale, m_Position.y + 10.0 * heroScale));
-	m_convex.setPoint(1, Vector2f(m_Position.x + 0.0 * heroScale, m_Position.y + 8.0 * heroScale));
-	m_convex.setPoint(2, Vector2f(m_Position.x + 3.0 * heroScale, m_Position.y + 0.0 * heroScale));
-	m_convex.setPoint(3, Vector2f(m_Position.x + 3.0 * heroScale, m_Position.y + 5.0 * heroScale));
-	m_convex.setPoint(4, Vector2f(m_Position.x + 3.5 * heroScale, m_Position.y + 6.0 * heroScale));
-	m_convex.setPoint(5, Vector2f(m_Position.x + 4.0 * heroScale, m_Position.y + 5.0 * heroScale));
-	m_convex.setPoint(6, Vector2f(m_Position.x + 4.0 * heroScale, m_Position.y + 0.0 * heroScale));
-	m_convex.setPoint(7, Vector2f(m_Position.x + 7.0 * heroScale, m_Position.y + 8.0 * heroScale));
-	m_convex.setPoint(8, Vector2f(m_Position.x + 7.0 * heroScale, m_Position.y + 10.0 * heroScale));
-	m_convex.setPoint(9, Vector2f(m_Position.x + 5.0 * heroScale, m_Position.y + 10.0 * heroScale));
-	m_convex.setPoint(10, Vector2f(m_Position.x + 5.0 * heroScale, m_Position.y + 9.0 * heroScale));
-	m_convex.setPoint(11, Vector2f(m_Position.x + 2.0 * heroScale, m_Position.y + 9.0 * heroScale));
-	m_convex.setPoint(12, Vector2f(m_Position.x + 2.0 * heroScale, m_Position.y + 10.0 * heroScale));
-
-
-	m_convex.setTexture(m_ptrTexture);
-	m_convex.setFillColor(Color(255, 150, 0));
-	m_convex.setPosition(m_Position.x, m_Position.y);
+	for (int i = 0; i < numLaser; ++i)
+	{
+		if (m_laser[i] != nullptr)
+		{
+			delete m_laser[i];
+		}
+	}
 }
 
 
-ConvexShape Hero::getHeroConvex()
-{
-	return m_convex;
-}
 
 
 
@@ -68,61 +52,103 @@ void Hero::moveLeft()
 	m_LeftPressed = true;
 }
 
+
 void Hero::moveRight()
 {
 	m_RightPressed = true;
 }
+
 
 void Hero::moveTop()
 {
 	m_TopPressed = true;
 }
 
+
 void Hero::moveBot()
 {
 	m_BotPressed = true;
 }
+
 
 void Hero::stopLeft()
 {
 	m_LeftPressed = false;
 }
 
+
 void Hero::stopRight()
 {
 	m_RightPressed = false;
 }
+
 
 void Hero::stopTop()
 {
 	m_TopPressed = false;
 }
 
+
 void Hero::stopBot()
 {
 	m_BotPressed = false;
 }
+
 
 void Hero::goFire()
 {
 	m_GoFire = true;
 }
 
+
 void Hero::stopFire()
 {
 	m_GoFire = false;
 }
 
-// Двигаем на основании пользовательского ввода в этом кадре, прошедшего времени и скорости
-void Hero::update(float elapsedTime, Clock clock)
-{
-	float maxX = VideoMode::getDesktopMode().width / 2.07;     ///// не знаю почему но фактические размеры в столько то раз меньше
-	float maxY = VideoMode::getDesktopMode().height / 2.2;
 
+
+
+
+void Hero::setLaserNullptr(int num)
+{
+	m_laser[num] = nullptr;
+}
+
+
+
+
+
+Sprite Hero::getHeroSprite()
+{
+	return m_Sprite;
+}
+
+
+Laser* Hero::getLaser(int num)
+{
+	return m_laser[num];
+}
+
+
+
+
+
+
+
+
+
+
+// Двигаем на основании пользовательского ввода в этом кадре, прошедшего времени и скорости
+void Hero::update(float elapsedTime)
+{
+	float maxX = VideoMode::getDesktopMode().width;     ///// не знаю почему но фактические размеры в столько то раз меньше
+	float maxY = VideoMode::getDesktopMode().height;
+	maxX -= m_Texture.getSize().x;
+	maxY -= m_Texture.getSize().y;
 	if (m_RightPressed)
 	{
 		if (m_Position.x + m_Speed * elapsedTime < maxX)    	// Чтобы не выходил за пределы монитора. Фактический размер, который отрисовывает библиотека в 2 раза меньше разрешения экрана
-
 		{
 			m_Position.x += m_Speed * elapsedTime;
 		}
@@ -138,7 +164,7 @@ void Hero::update(float elapsedTime, Clock clock)
 
 	if (m_TopPressed)
 	{
-		if (m_Position.y - m_Speed * elapsedTime > 290)
+		if (m_Position.y - m_Speed * elapsedTime > 650)
 		{
 			m_Position.y -= m_Speed * elapsedTime;
 		}
@@ -152,28 +178,25 @@ void Hero::update(float elapsedTime, Clock clock)
 		}
 	}
 
-	m_lastFire += elapsedTime;
+	m_LastFire += elapsedTime;
 	if (m_GoFire)
 	{
-		if (m_lastFire > 1.0)
+		if (m_LastFire > 1.0)    /// считает, сколько секунд прошло с последнего выстрела, чтобы слишком часто не стрелять
 		{
 			fire();
-			m_lastFire = 0;
+			m_LastFire = 0;
 		}
 	}
 
 	// перемещаем фигуру героя
-	changePosition();
-
-
-
+	m_Sprite.setPosition(m_Position);
 }
 
 
 
 void Hero::fire()
 {
-	int freeLaser = 0, i = 0;
+	int freeLaser = 0, i;
 	for (i = 0; i < numLaser; ++i)
 	{
 		if (m_laser[i] == nullptr)
@@ -189,10 +212,10 @@ void Hero::fire()
 	{
 		for (i = 0; m_laser[i] != nullptr; ++i);
 		Vector2f temp;
-		temp.x = m_Position.x*2 + 3.1 * heroScale;
-		temp.y = m_Position.y*2;
-		m_laser[i] = new Laser(temp);
-		temp.y = m_Position.y * 2 - m_laser[i]->getLaserSprite().getTexture()->getSize().y;
+		temp.y = m_Position.y;
+		m_laser[i] = new Laser();
+		temp.x = m_Position.x + m_Texture.getSize().x / 2 - m_laser[i]->getLaserSprite().getTexture()->getSize().x / 2;
+		temp.y = m_Position.y - m_laser[i]->getLaserSprite().getTexture()->getSize().y;
 		m_laser[i]->setPosition(temp);
 	}
 
@@ -201,12 +224,6 @@ void Hero::fire()
 
 
 
-
-
-Laser* Hero::getLaser(int num)
-{
-	return m_laser[num];
-}
 
 
 

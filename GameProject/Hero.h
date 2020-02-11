@@ -2,8 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Laser.h"
 
-const float heroScale = 10.0;
-const int heroSpeed = 300;
+const int heroSpeed = 400;
 const int numLaser = 1000;    /// максимальное количество лазеров на экране
 
 
@@ -16,14 +15,13 @@ private:
 
 	Vector2f m_Position;  //// Координаты левого верхнего угла примоугольника, который описывает фигурку героя
 
-	ConvexShape m_convex;
+	Sprite m_Sprite;
 
 	Texture m_Texture;
-	const Texture* m_ptrTexture;
 
 	Laser* m_laser[numLaser];
 
-	int m_health;
+	int m_Health;
 
 	// Логические переменные для отслеживания направления движения
 	bool m_LeftPressed;
@@ -35,46 +33,43 @@ private:
 	// Скорость в пикселях в секунду
 	float m_Speed;
 
-	float m_lastFire;
+	float m_LastFire;
 
 
 public:
 
 	Hero();
+	~Hero();
 
 
 	// Для движения
 	void moveLeft();
-
 	void moveRight();
-
 	void moveTop();
-
 	void moveBot();
+
 
 	// Прекращение движения
 	void stopLeft();
-
 	void stopRight();
-
 	void stopTop();
-
 	void stopBot();
 
-	// Эта функция будет вызываться на каждый кадр
-	void update(float elapsedTime, Clock clock);
+	// Для стрельбы
+	void goFire();
+	void stopFire();
 
-	/// Перемещаем фигуру героя
-	void changePosition();
 
-	ConvexShape getHeroConvex();
+	void setLaserNullptr(int num);
 
-	void fire();
 
+	Sprite getHeroSprite();
 	Laser* getLaser(int num);
 
-	void goFire();
-	
-	void stopFire();
+
+	// Эта функция будет вызываться на каждый кадр
+	void update(float elapsedTime);
+
+	void fire();
 
 };

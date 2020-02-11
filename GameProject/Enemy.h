@@ -5,7 +5,6 @@
 using namespace sf;
 
 
-const float enemyScale = 10.0;
 const int enemySpeedX = 50;
 const int enemySpeedY = 2;
 
@@ -19,49 +18,42 @@ private:
 	int e_Damage;
 
 	Vector2f e_Position;  ////  оординаты левого верхнего угла примоугольника, который описывает фигурку врага
-	Vector2f e_MaxPosition;   /// координаты, в которых моб разворачиваетс€
-	Vector2f e_MinPosition;
+	Vector2f e_XRange;   /// координаты, в которых моб разворачиваетс€
+	Vector2f e_YRange;
 
 
-	ConvexShape e_Convex;
+	Sprite e_Sprite;
 
 	Texture e_Texture;
-	const Texture* e_ptrTexture;
 
-	float e_SpeedX;   // скорость движени€ в пиксел€х в секунду по оси ’
-	float e_SpeedY;   // скорость движени€ в пиксел€х в секунду по оси Y
+
+	Vector2f e_Speed;   // скорость движени€ в пиксел€х в секунду по оси ’
+					   // скорость движени€ в пиксел€х в секунду по оси Y
 
 
 public:
 
-	static int e_Number;     /// количество врагов на экране
 
 	Enemy();
 
 
-	void changePosition();   /// перемещение и изменение фигуры e_Convex
-
-	ConvexShape getEnemyConvex();
 
 
-	// Ёта функци€ будет вызыватьс€ на каждый кадр
-	void update(float elapsedTime);
-
-
-	void setPositionX(float x);
-
-	void setPositionY(float y);
-
+	void setPosition(Vector2f position);
+	void setPosition(float x, float y);
 	void setHealth(int health);
-
 	void setDamage(int damage);
+	void setXRange(Vector2f xRange);
+	void setXRange(float xLeft, float xRight);
+	void setYRange(Vector2f yRange);
+	void setYRange(float yLeft, float yRight);
 
-	void setMaxPositionX(float x);
 
-	void setMaxPositionY(float y);
+	Vector2f getPosition();
+	Sprite getEnemySprite();
 
-	void setMinPositionX(float x);
 
-	void setMinPositionY(float y);
+	void update(float elapsedTime);  	// Ёта функци€ будет вызыватьс€ на каждый кадр
+
 };
 

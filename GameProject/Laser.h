@@ -5,7 +5,7 @@
 using namespace sf;
 
 const float laserSpeedX = -0;
-const float laserSpeedY = -300;    /// так как начало координат в левом верхнем углу, то чтобы лететь вверх надо уменьшать координату 
+const float laserSpeedY = -450;    /// так как начало координат в левом верхнем углу, то чтобы лететь вверх надо уменьшать координату 
 
 
 
@@ -14,15 +14,15 @@ class Laser
 
 private:
 
-	Vector2f l_speed;    // скорость по осям х и y
+	Vector2f l_Speed;    // скорость по осям х и y
 
 	Texture l_Texture;
 
-	Sprite l_sprite;
+	Sprite l_Sprite;
 
-	int l_damage;
+	int l_Damage;
 
-	Vector2f l_Position[2];      //// координаты главной диагонали прямоугольника описывающего лазер
+	Vector2f l_Position;      //// координаты главной диагонали прямоугольника описывающего лазер
 
 
 
@@ -31,22 +31,21 @@ private:
 public:
 
 	Laser();
-
 	Laser(Vector2f position);
 
+
+
 	void setSpeed(Vector2f speed);
-
-	void changePosition();
-
 	void setPosition(Vector2f position);
 
+
+
 	Sprite getLaserSprite();
+	Vector2f getPosition();
+
+
 
 	void update(float elapsedTime);
-
-
-
-
 
 };
 

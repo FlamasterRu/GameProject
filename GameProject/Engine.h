@@ -13,7 +13,7 @@ enum userInput
 };
 
 
-const int numEnemy = 1;
+const int numEnemy = 10;
 const int lineEnemy = 3;
 
 

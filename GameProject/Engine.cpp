@@ -2,19 +2,59 @@
 
 Engine::Engine()
 {
-	
-	// Включаем сглаживание
-	m_Setting.antialiasingLevel = 8;
-
 	// Получаем разрешение экрана, создаем окно
 	Vector2f resolution;
 	resolution.x = VideoMode::getDesktopMode().width;
 	resolution.y = VideoMode::getDesktopMode().height;
 
+	// Включаем сглаживание
+	m_Setting.antialiasingLevel = 8;
+
+
+
 	m_Window.create(VideoMode(resolution.x, resolution.y), "Game", Style::Fullscreen);
 
 	// Включаем вертикальную синхронизацию
 	m_Window.setVerticalSyncEnabled(true);
+
+	m_NumberAliveEnemy = numEnemy * lineEnemy;
+	m_userMenuInput = 3;
+	for (int i = 0; i < lineEnemy * numEnemy; ++i)
+	{
+			m_Enemy[i] = nullptr;
+	}
+
+	m_changeWindow = false;
+
+}
+
+
+
+
+
+
+Engine::~Engine()
+{
+	for (int i = 0; i < numEnemy * lineEnemy; ++i)
+	{
+		if (m_Enemy[i] != nullptr)
+		{
+			delete m_Enemy[i];
+		}
+	}
+}
+
+
+
+
+
+
+
+void Engine::start()
+{
+	m_changeWindow = false;
+
+	m_NumberAliveEnemy = numEnemy * lineEnemy;
 
 	// Выключаем курсор
 	m_Window.setMouseCursorVisible(false);
@@ -33,27 +73,11 @@ Engine::Engine()
 			m_Enemy[i + j * numEnemy]->setYRange(0, 700);
 		}
 	}
-	m_NumberAliveEnemy = numEnemy;
-}
 
-
-Engine::~Engine()
-{
-	for (int i = 0; i < numEnemy * lineEnemy; ++i)
-	{
-		if (m_Enemy[i] != nullptr)
-		{
-			delete m_Enemy[i];
-		}
-	}
-}
-
-void Engine::start()
-{
 	// Расчет времени
 	Clock clock;
 
-	while (m_Window.isOpen())
+	while (!m_changeWindow)
 	{
 		// Перезапускаем таймер и записываем отмеренное время в dt
 		Time dt = clock.restart();
@@ -73,6 +97,13 @@ void Engine::start()
 		}
 	}
 }
+
+
+
+
+
+
+
 
 
 
@@ -136,21 +167,134 @@ void Engine::check()
 							//// попал
 							if (m_Enemy[j] != nullptr)
 							{
-								delete (m_Enemy[j]);
+								delete m_Enemy[j];
 								m_Enemy[j] = nullptr;
 								delete m_Hero.getLaser(i);
 								m_Hero.setLaserNullptr(i);
+								--m_NumberAliveEnemy;
 							}
 						}
 					}
 				}
 			}
 		}
+	}   /// Если враги закончились, то очищаем память и надо добавить отображение победы или поражения
+	if (m_NumberAliveEnemy == 0)
+	{
+		m_userMenuInput = ShowMenu;
+		m_changeWindow = true;
+		//m_Window.close();
+	}
+}
+
+
+
+
+void Engine::menu()
+{
+	m_changeWindow = false;
+
+	// Включаем курсор
+	m_Window.setMouseCursorVisible(true);
+
+	m_BackgroundTexture.loadFromFile("Menu.png");
+
+	m_BackgroundSprite.setTexture(m_BackgroundTexture);
+
+
+	Cursor cursor;
+	cursor.loadFromSystem(Cursor::Arrow);
+	m_Window.setMouseCursor(cursor);
+
+
+	// Расчет времени
+	Clock clock;
+
+	while (!m_changeWindow)
+	{
+		// Перезапускаем таймер и записываем отмеренное время в dt
+		Time dt = clock.restart();
+
+		float dtAsSeconds = dt.asSeconds();
+
+		try
+		{
+			draw();
+			input();
+		}
+		catch (...)
+		{
+			m_Window.close();
+		}
+	}
+
+}
+
+
+
+void Engine::setting()
+{
+	m_changeWindow = false;
+
+	m_BackgroundTexture.loadFromFile("Background.png");
+
+	m_BackgroundSprite.setTexture(m_BackgroundTexture);
+
+	Cursor cursor;
+	cursor.loadFromSystem(Cursor::Arrow);
+	m_Window.setMouseCursor(cursor);
+
+
+	for (int i = 0; i < numEnemy * lineEnemy; ++i)
+	{
+		m_Enemy[i] = nullptr;
 	}
 
 
+	// Расчет времени
+	Clock clock;
+
+	while (!m_changeWindow)
+	{
+		// Перезапускаем таймер и записываем отмеренное время в dt
+		Time dt = clock.restart();
+
+		float dtAsSeconds = dt.asSeconds();
+
+		try
+		{
+			draw();
+			input();
+		}
+		catch (...)
+		{
+			m_Window.close();
+		}
+	}
+
 
 }
+
+
+int Engine::getUserMenuInput()
+{
+	return m_userMenuInput;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

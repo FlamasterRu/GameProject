@@ -8,7 +8,27 @@ int main()
 
 	Engine engine;
 
-	engine.start();
+	while (engine.getUserMenuInput())
+	{
+		switch (engine.getUserMenuInput())
+		{
+		case Exit:
+			break;
+		case StartGame:
+			engine.start();
+			break;
+		case OpenSetting:
+			engine.setting();
+			break;
+		case ShowMenu:
+			engine.menu();
+			break;
+		default:
+			break;
+		}
+	}
+
+
 
 	// Останавливаем программу программу, когда движок остановлен
 	return 0;

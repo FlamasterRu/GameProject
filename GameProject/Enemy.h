@@ -53,7 +53,7 @@ public:
 	Sprite getEnemySprite();
 
 
-	void update(float elapsedTime);  	// Эта функция будет вызываться на каждый кадр
+	int update(float elapsedTime);  	// Эта функция будет вызываться на каждый кадр
 
 };
 

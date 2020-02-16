@@ -1,13 +1,19 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Hero.h";
+#include "Hero.h"
 #include "Enemy.h"
 
+/// + координаты верхнего левого угла кнопки и левого нижнего
+enum userInput
+{
+	Exit,			// Выйти из игры 0     (910, 640)   (1030, 700)
+	StartGame,		// Начать игру 1		(850, 410) (1110, 480)
+	OpenSetting,	// Открыть настройки игры 2		(890, 540)  (1070, 600)
+	ShowMenu		// Отобразить меню 3
+};
 
 
-
-
-const int numEnemy = 10;
+const int numEnemy = 1;
 const int lineEnemy = 3;
 
 
@@ -30,6 +36,10 @@ private:
 
 	int m_NumberAliveEnemy;
 
+	int m_userMenuInput;
+
+	bool m_changeWindow;
+
 
 
 	void input();
@@ -44,5 +54,11 @@ public:
 
 	// Функция старт вызовет все приватные функции
 	void start();
+
+	void menu();
+
+	void setting();
+
+	int getUserMenuInput();
 
 };

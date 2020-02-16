@@ -100,7 +100,7 @@ Sprite Enemy::getEnemySprite()
 
 
 
-void Enemy::update(float elapsedTime)
+int Enemy::update(float elapsedTime)
 {
 	e_Position.x += e_Speed.x * elapsedTime;
 	e_Position.y += e_Speed.y * elapsedTime;
@@ -119,9 +119,11 @@ void Enemy::update(float elapsedTime)
 	{
 		///// Поражение.  
 		//throw("lose");
+		return 3;
 	}
 
 	e_Sprite.setPosition(e_Position);
+	return 1;
 }
 
 

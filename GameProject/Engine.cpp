@@ -21,10 +21,16 @@ Engine::Engine()
 	m_userMenuInput = 3;
 	for (int i = 0; i < lineEnemy * numEnemy; ++i)
 	{
-			m_Enemy[i] = nullptr;
+		m_Enemy[i] = nullptr;
 	}
 
 	m_changeWindow = false;
+
+	keyToFire = Keyboard::Space;
+	keyToMoveBot = Keyboard::S;
+	keyToMoveLeft = Keyboard::A;
+	keyToMoveRight = Keyboard::D;
+	keyToMoveTop = Keyboard::W;
 
 }
 
@@ -74,6 +80,11 @@ void Engine::start()
 		}
 	}
 
+	for (int i = 0; i < numLaser; ++i)
+	{
+		m_Hero.setLaserNullptr(i);
+	}
+
 	// –асчет времени
 	Clock clock;
 
@@ -111,7 +122,7 @@ void Engine::start()
 void Engine::check()
 {
 	////// проверка на вылет лазера и попадание, а также на столкновение геро€ с мобами
-	int i , j;
+	int i, j;
 	Vector2u temp;
 	Vector2f botEnemyPosition, botLaserPosition;
 	Vector2f topEnemyPosition, topLaserPosition;
@@ -251,6 +262,7 @@ void Engine::setting()
 	}
 
 
+
 	// –асчет времени
 	Clock clock;
 
@@ -282,6 +294,217 @@ int Engine::getUserMenuInput()
 }
 
 
+
+void Engine::drawGame()
+{
+	m_Window.draw(m_Hero.getHeroSprite());  //// рисуем фигуру геро€
+
+	for (int i = 0; i < numEnemy * lineEnemy; ++i)   /// рисует врагов 
+	{
+		if (m_Enemy[i] != nullptr)
+		{
+			m_Window.draw(m_Enemy[i]->getEnemySprite());
+		}
+	}
+
+	for (int i = 0; i < numLaser; ++i)
+	{
+		if (m_Hero.getLaser(i) != nullptr)
+		{
+			m_Window.draw(m_Hero.getLaser(i)->getLaserSprite());
+		}
+	}
+}
+
+
+
+
+void Engine::drawMenu()
+{
+
+}
+
+
+
+void Engine::drawSetting()
+{
+	Font font;
+	font.loadFromFile("gameFont.ttf");
+
+	Text text1("Setting", font);
+	text1.setFillColor(Color::Blue);
+	text1.setPosition(930.0, 100.0);
+
+
+
+
+
+	m_Window.draw(text1);
+}
+
+
+
+void Engine::updateGameWindow(float dtAsSeconds)
+{
+	int ifGameOver = 1;
+	m_Hero.update(dtAsSeconds);
+
+
+	for (int i = 0; i < numEnemy * lineEnemy; ++i)
+	{
+		if (m_Enemy[i] != nullptr)
+		{
+			ifGameOver = m_Enemy[i]->update(dtAsSeconds);
+			if (ifGameOver == ShowMenu)
+			{
+				/// если кто-то перечек черту, то поражение, очищаем пам€ть и надо добавить окно поражени€
+				m_userMenuInput = ShowMenu;
+				for (int i = 0; i < numEnemy * lineEnemy; ++i)
+				{
+					if (m_Enemy[i] != nullptr)
+					{
+						delete m_Enemy[i];
+					}
+					m_Enemy[i] = nullptr;
+				}
+				m_changeWindow = true;
+				//m_Window.close();
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < numLaser; ++i)
+	{
+		if (m_Hero.getLaser(i) != nullptr)
+		{
+			m_Hero.getLaser(i)->update(dtAsSeconds);
+		}
+	}
+}
+
+
+
+void Engine::updateMenuWindow(float dtAsSeconds)
+{
+
+}
+
+
+void Engine::updateSettingWindow(float dtAsSeconds)
+{
+
+}
+
+
+
+void Engine::inputInGame()
+{
+	// ќбрабатываем нажатие Escape
+	if (Keyboard::isKeyPressed(Keyboard::Escape))
+	{
+		m_userMenuInput = ShowMenu;
+		m_changeWindow = true;
+		//m_Window.close();
+		sleep(timeDelayEscape);
+	}
+
+	// ќбрабатываем нажатие клавиш движени€
+	if (Keyboard::isKeyPressed(keyToMoveLeft))
+	{
+		m_Hero.moveLeft();
+	}
+	else
+	{
+		m_Hero.stopLeft();
+	}
+
+	if (Keyboard::isKeyPressed(keyToMoveRight))
+	{
+		m_Hero.moveRight();
+	}
+	else
+	{
+		m_Hero.stopRight();
+	}
+
+	if (Keyboard::isKeyPressed(keyToMoveTop))
+	{
+		m_Hero.moveTop();
+	}
+	else
+	{
+		m_Hero.stopTop();
+	}
+
+	if (Keyboard::isKeyPressed(keyToMoveBot))
+	{
+		m_Hero.moveBot();
+	}
+	else
+	{
+		m_Hero.stopBot();
+	}
+
+
+	////  лавиши стрельбы
+
+	if (Keyboard::isKeyPressed(keyToFire))
+	{
+		m_Hero.goFire();
+	}
+	else
+	{
+		m_Hero.stopFire();
+	}
+}
+
+
+
+void Engine::inputInMenu()
+{
+	if (Mouse::isButtonPressed(Mouse::Left))
+	{
+		Vector2i mousePosition(Mouse::getPosition());
+		if ((mousePosition.x > 910) and (mousePosition.x < 1030) and (mousePosition.y > 640) and (mousePosition.y < 700))		// (910, 640)   (1030, 700)
+		{
+			m_userMenuInput = Exit;
+			m_changeWindow = true;
+			m_Window.close();
+		}
+		if ((mousePosition.x > 850) and (mousePosition.x < 1110) and (mousePosition.y > 410) and (mousePosition.y < 480))		// (850, 410) (1110, 480)
+		{
+			m_userMenuInput = StartGame;
+			m_changeWindow = true;
+			//m_Window.close();
+		}
+		if ((mousePosition.x > 890) and (mousePosition.x < 1070) and (mousePosition.y > 540) and (mousePosition.y < 600))		// (890, 540)  (1070, 600)
+		{
+			m_userMenuInput = OpenSetting;
+			m_changeWindow = true;
+			//m_Window.close();
+		}
+	}
+	if (Keyboard::isKeyPressed(Keyboard::Escape))
+	{
+		m_userMenuInput = 0;
+		m_changeWindow = true;
+		//m_Window.close();
+		sleep(timeDelayEscape);
+	}
+}
+
+
+
+void Engine::inputInSetting()
+{
+	if (Keyboard::isKeyPressed(Keyboard::Escape))
+	{
+		m_userMenuInput = ShowMenu;
+		m_changeWindow = true;
+		//m_Window.close();
+		sleep(timeDelayEscape);
+	}
+}
 
 
 

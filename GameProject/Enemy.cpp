@@ -6,7 +6,7 @@ Enemy::Enemy()
 
 	e_Speed.x = enemySpeedX;
 	e_Speed.y = enemySpeedY;
-	
+
 
 	e_Position.x = 0;
 	e_Position.y = 0;

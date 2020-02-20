@@ -27,7 +27,7 @@ Hero::Hero()
 	m_GoFire = false;
 
 	m_LastFire = 1000.0;
-	
+
 	m_Health = 3;
 
 }

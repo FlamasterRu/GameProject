@@ -15,6 +15,7 @@ enum userInput
 
 const int numEnemy = 10;
 const int lineEnemy = 3;
+const Time timeDelayEscape = seconds(0.3);   // чтобы сразу не выключить игру, так как пользователь не моментально отпускает кнопку Esc
 
 
 using namespace sf;
@@ -41,10 +42,28 @@ private:
 	bool m_changeWindow;
 
 
+	//  нопки управлени€
+	Keyboard::Key keyToMoveRight;
+	Keyboard::Key keyToMoveLeft;
+	Keyboard::Key keyToMoveTop;
+	Keyboard::Key keyToMoveBot;
+	Keyboard::Key keyToFire;
+
+
+
 
 	void input();
+	void inputInGame();
+	void inputInMenu();
+	void inputInSetting();
 	void update(float dtAsSeconds);
+	void updateGameWindow(float dtAsSeconds);
+	void updateMenuWindow(float dtAsSeconds);
+	void updateSettingWindow(float dtAsSeconds);
 	void draw();
+	void drawGame();
+	void drawMenu();
+	void drawSetting();
 	void check();
 
 public:

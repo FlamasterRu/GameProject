@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Hero.h"
 #include "Enemy.h"
+#include <string>
 
 /// + координаты верхнего левого угла кнопки и левого нижнего
 enum userInput
@@ -49,6 +50,12 @@ private:
 	Keyboard::Key keyToMoveBot;
 	Keyboard::Key keyToFire;
 
+	std::string stringKeyToMoveRight;
+	std::string stringKeyToMoveLeft;
+	std::string stringKeyToMoveTop;
+	std::string stringKeyToMoveBot;
+	std::string stringKeyToFire;
+
 
 
 
@@ -65,6 +72,10 @@ private:
 	void drawMenu();
 	void drawSetting();
 	void check();
+	std::string keyToString(Keyboard::Key key);
+	Keyboard::Key pressedButtom();
+	std::string pressedButtomAsString(Keyboard::Key key);
+	Keyboard::Key returnPressedKey();
 
 public:
 

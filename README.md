@@ -1,6 +1,8 @@
 # GameProject
 Settings do not work yet.
 
+Screen resolution 1920*1080.
+
 Control:
 
 Up: w

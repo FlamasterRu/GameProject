@@ -17,9 +17,6 @@ Enemy::Enemy()
 	e_YRange.x = 0;
 	e_YRange.y = 0;
 
-	e_Health = 1;
-	e_Damage = 1;
-
 
 	// Загрузка текстуры из папки, в которой исполняемый файл
 	e_Texture.loadFromFile("Enemy.png");    //// 70*70  размер в пикселях
@@ -44,17 +41,6 @@ void Enemy::setPosition(float x, float y)
 	e_Position.y = y;
 }
 
-
-void Enemy::setDamage(int damage)
-{
-	e_Damage = damage;
-}
-
-
-void Enemy::setHealth(int health)
-{
-	e_Health = health;
-}
 
 
 void Enemy::setXRange(Vector2f xRange)
@@ -85,7 +71,6 @@ void Enemy::setYRange(float yLeft, float yRight)
 
 
 
-
 Vector2f Enemy::getPosition()
 {
 	return e_Position;
@@ -99,9 +84,10 @@ Sprite Enemy::getEnemySprite()
 
 
 
-
-int Enemy::update(float elapsedTime)
+// Вызывается на каждый кадр и перемещает моба в зависимости от текущей позиции, скорости и прошедшего времени
+void Enemy::update(float elapsedTime)
 {
+	/// Проверка на вылет за пределы экрана лежит на функции check, класса Engine!!!!
 	e_Position.x += e_Speed.x * elapsedTime;
 	e_Position.y += e_Speed.y * elapsedTime;
 
@@ -115,15 +101,20 @@ int Enemy::update(float elapsedTime)
 		e_Speed.x *= -1;    /// Если дошёл левого до края - разворачиваем моба
 	}
 
-	if (e_Position.y > e_YRange.y)
+	Vector2f resolution;
+	resolution.x = VideoMode::getDesktopMode().width;
+	resolution.y = VideoMode::getDesktopMode().height;
+	if ((e_Position.x > resolution.x) or (e_Position.x < -70))
 	{
-		///// Поражение.  
-		//throw("lose");
-		return 3;
+		// Вышел за пределы экрана
+	}
+	if ((e_Position.y > resolution.y) or (e_Position.y < -70))
+	{
+		// Вышел за пределы экрана
 	}
 
+
 	e_Sprite.setPosition(e_Position);
-	return 1;
 }
 
 

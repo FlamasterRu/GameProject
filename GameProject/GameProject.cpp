@@ -3,12 +3,12 @@
 
 int main()
 {
-	HWND hWnd = GetConsoleWindow();
+	HWND hWnd = GetConsoleWindow();		// чтобы не было консоли
 	ShowWindow(hWnd, SW_HIDE);
 
 	Engine engine;
 
-	while (engine.getUserMenuInput())
+	while (engine.getUserMenuInput())		// 0, если пользователь нажмёт на Exit
 	{
 		switch (engine.getUserMenuInput())
 		{

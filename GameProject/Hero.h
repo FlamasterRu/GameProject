@@ -19,9 +19,8 @@ private:
 
 	Texture m_Texture;
 
-	Laser* m_laser[numLaser];
+	Laser* m_laser[numLaser];		// Лазеры, выпущенные героем
 
-	int m_Health;
 
 	// Логические переменные для отслеживания направления движения
 	bool m_LeftPressed;
@@ -33,7 +32,7 @@ private:
 	// Скорость в пикселях в секунду
 	float m_Speed;
 
-	float m_LastFire;
+	float m_LastFire;		//Сколько секунд назад был последний выстрел (чтобы не стрелять как пулемёт)
 
 
 public:
@@ -61,10 +60,13 @@ public:
 
 
 	void setLaserNullptr(int num);
+	void setPosition(Vector2f position);
+	void setPosition(float positionX, float positionY);
 
 
 	Sprite getHeroSprite();
 	Laser* getLaser(int num);
+	Vector2f getPosition();
 
 
 	// Эта функция будет вызываться на каждый кадр

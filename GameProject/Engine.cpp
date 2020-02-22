@@ -10,15 +10,13 @@ Engine::Engine()
 	// Включаем сглаживание
 	m_Setting.antialiasingLevel = 8;
 
-
-
 	m_Window.create(VideoMode(resolution.x, resolution.y), "Game", Style::Fullscreen);
 
 	// Включаем вертикальную синхронизацию
 	m_Window.setVerticalSyncEnabled(true);
 
-	m_NumberAliveEnemy = numEnemy * lineEnemy;
 	m_userMenuInput = 3;
+
 	for (int i = 0; i < lineEnemy * numEnemy; ++i)
 	{
 		m_Enemy[i] = nullptr;
@@ -55,7 +53,7 @@ Engine::~Engine()
 
 void Engine::start()
 {
-	m_changeWindow = false;
+	m_changeWindow = false;		// так как мы только что сменили окно
 
 	m_NumberAliveEnemy = numEnemy * lineEnemy;
 
@@ -77,10 +75,8 @@ void Engine::start()
 		}
 	}
 
-	for (int i = 0; i < numLaser; ++i)
-	{
-		m_Hero.setLaserNullptr(i);
-	}
+	// Размещаем героя
+	m_Hero.setPosition(VideoMode::getDesktopMode().width / 2.08, VideoMode::getDesktopMode().height / 1.35);
 
 	// Расчет времени
 	Clock clock;
@@ -90,7 +86,7 @@ void Engine::start()
 		// Перезапускаем таймер и записываем отмеренное время в dt
 		Time dt = clock.restart();
 
-		float dtAsSeconds = dt.asSeconds();
+		float dtAsSeconds = dt.asSeconds();		// в dtAsSeconds будет лежать количество секунд, с последнего рестарта раймера (на предыдущей итерации цикла while)
 
 		try
 		{
@@ -104,11 +100,20 @@ void Engine::start()
 			m_Window.close();
 		}
 	}
-	for (int i = 0; i < numEnemy * lineEnemy; ++i)
+	for (int i = 0; i < numEnemy * lineEnemy; ++i)		// если игра закончилась очищаем после себя память
 	{
 		if (m_Enemy[i] != nullptr)
 		{
 			delete m_Enemy[i];
+			m_Enemy[i] = nullptr;
+		}
+	}
+	for (int i = 0; i < numLaser; ++i)
+	{
+		if (m_Hero.getLaser(i) != nullptr)
+		{
+			delete m_Hero.getLaser(i);
+			m_Hero.setLaserNullptr(i);
 		}
 	}
 }
@@ -118,9 +123,12 @@ void Engine::check()
 {
 	////// проверка на вылет лазера и попадание, а также на столкновение героя с мобами
 	int i, j;
+	Vector2f resolution;
+	resolution.x = VideoMode::getDesktopMode().width;
+	resolution.y = VideoMode::getDesktopMode().height;
 	Vector2u temp;
-	Vector2f botEnemyPosition, botLaserPosition;
-	Vector2f topEnemyPosition, topLaserPosition;
+	Vector2f botEnemyPosition, botLaserPosition;		// Правый нижний угол прямоугольника, описывающего текстуру
+	Vector2f topEnemyPosition, topLaserPosition;		// Левый верхний угол прямоугольника, описывающего текстуру 
 	for (i = 0; i < numLaser; ++i)
 	{
 		if (m_Hero.getLaser(i) != nullptr)
@@ -132,15 +140,14 @@ void Engine::check()
 			botLaserPosition.x += topLaserPosition.x;
 			botLaserPosition.y += topLaserPosition.y;
 
-
 			//// проверка на вылет из карты
-			if (botLaserPosition.y < 0)
+			if ((botLaserPosition.y < 0) or (botLaserPosition.y > resolution.y))
 			{
 				/// вылетел в верх экрана
 				delete m_Hero.getLaser(i);
 				m_Hero.setLaserNullptr(i);
 			}
-			if ((botLaserPosition.x < 0) or (topLaserPosition.x > 1920))
+			if ((botLaserPosition.x < 0) or (topLaserPosition.x > resolution.x))
 			{
 				/// вылетел в бок экрана
 				delete m_Hero.getLaser(i);
@@ -156,9 +163,9 @@ void Engine::check()
 				{
 
 					temp = m_Enemy[j]->getEnemySprite().getTexture()->getSize();
+					topEnemyPosition = m_Enemy[j]->getPosition();
 					botEnemyPosition.x = float(temp.x);
 					botEnemyPosition.y = float(temp.y);
-					topEnemyPosition = m_Enemy[j]->getPosition();
 					botEnemyPosition.x += topEnemyPosition.x;
 					botEnemyPosition.y += topEnemyPosition.y;
 
@@ -184,20 +191,96 @@ void Engine::check()
 				}
 			}
 		}
-	}   /// Если враги закончились, то очищаем память и надо добавить отображение победы или поражения
-	if (m_NumberAliveEnemy == 0)
+	}
+	// Проверка на столкновение героя с мобами и вылет врагов за карту
+	Vector2f botHeroPosition;		// Правый нижний угол прямоугольника, описывающего текстуру
+	Vector2f topHeroPosition;		// Левый верхний угол прямоугольника, описывающего текстуру 
+	temp = m_Hero.getHeroSprite().getTexture()->getSize();
+	topHeroPosition = m_Hero.getPosition();
+	botHeroPosition.x = float(temp.x);
+	botHeroPosition.y = float(temp.y);
+	botHeroPosition.x += topHeroPosition.x;
+	botHeroPosition.y += topHeroPosition.y;
+	for (i = 0; i < lineEnemy * numEnemy; ++i)
+	{
+		if (m_Enemy[i] != nullptr)
+		{
+
+			temp = m_Enemy[i]->getEnemySprite().getTexture()->getSize();
+			topEnemyPosition = m_Enemy[i]->getPosition();
+			botEnemyPosition.x = float(temp.x);
+			botEnemyPosition.y = float(temp.y);
+			botEnemyPosition.x += topEnemyPosition.x;
+			botEnemyPosition.y += topEnemyPosition.y;
+
+
+			// правый нижний угол героя
+			if ((botHeroPosition.x > topEnemyPosition.x) and (botHeroPosition.x < botEnemyPosition.x))
+			{
+				if ((botHeroPosition.y > topEnemyPosition.y) and (botHeroPosition.y < botEnemyPosition.y))
+				{
+					// столкнулись
+					m_userMenuInput = ShowMenu;
+					m_changeWindow = true;
+					showMessage("You lose :(");		// память очистится после выхода из цикла в start
+					break;
+				}
+			}
+
+			// Левый нижний угол героя
+			if ((topHeroPosition.x > topEnemyPosition.x) and (topHeroPosition.x < botEnemyPosition.x))
+			{
+				if ((botHeroPosition.y > topEnemyPosition.y) and (botHeroPosition.y < botEnemyPosition.y))
+				{
+					// столкнулись
+					m_userMenuInput = ShowMenu;
+					m_changeWindow = true;
+					showMessage("You lose :(");		// память очистится после выхода из цикла в start
+					break;
+				}
+			}
+
+			// Середина героя(нос корабля), так как визуально корабль треугольный 
+			if (((topHeroPosition.x + botHeroPosition.x) / 2 > topEnemyPosition.x) and ((topHeroPosition.x + botHeroPosition.x) / 2 < botEnemyPosition.x))
+			{
+				if ((topHeroPosition.y > topEnemyPosition.y) and (topHeroPosition.y + 15.0 < botEnemyPosition.y))
+				{
+					// столкнулись
+					m_userMenuInput = ShowMenu;
+					m_changeWindow = true;
+					showMessage("You lose :(");		// память очистится после выхода из цикла в start
+					break;
+				}
+			}
+
+
+
+
+			// Проверка на вылет мобов за карту 
+			if (topEnemyPosition.y > resolution.y)
+			{
+				// Поражение
+				m_userMenuInput = ShowMenu;
+				m_changeWindow = true;
+				showMessage("You lose :(");		// Память очистится после выхода из цикла в start
+				break;
+			}
+		}
+	}
+
+
+	if (m_NumberAliveEnemy == 0)		// Когда врагов не останется, победа), переключаемся на меню
 	{
 		m_userMenuInput = ShowMenu;
 		m_changeWindow = true;
 		showMessage("You Win!");
-		//m_Window.close();
 	}
 }
 
 
 void Engine::menu()
 {
-	m_changeWindow = false;
+	m_changeWindow = false;		// только что сменили окно
 
 	// Включаем курсор
 	m_Window.setMouseCursorVisible(true);
@@ -220,7 +303,7 @@ void Engine::menu()
 		// Перезапускаем таймер и записываем отмеренное время в dt
 		Time dt = clock.restart();
 
-		float dtAsSeconds = dt.asSeconds();
+		float dtAsSeconds = dt.asSeconds();		// в dtAsSeconds будет лежать количество секунд, с последнего рестарта раймера (на предыдущей итерации цикла while)
 
 		try
 		{
@@ -238,7 +321,7 @@ void Engine::menu()
 
 void Engine::setting()
 {
-	m_changeWindow = false;
+	m_changeWindow = false;		// Только что сменили окно
 
 	m_BackgroundTexture.loadFromFile("Background.png");
 
@@ -249,13 +332,6 @@ void Engine::setting()
 	m_Window.setMouseCursor(cursor);
 
 
-	for (int i = 0; i < numEnemy * lineEnemy; ++i)
-	{
-		m_Enemy[i] = nullptr;
-	}
-
-
-
 	// Расчет времени
 	Clock clock;
 
@@ -264,7 +340,7 @@ void Engine::setting()
 		// Перезапускаем таймер и записываем отмеренное время в dt
 		Time dt = clock.restart();
 
-		float dtAsSeconds = dt.asSeconds();
+		float dtAsSeconds = dt.asSeconds();		// В dtAsSeconds будет лежать количество секунд, с последнего рестарта раймера (на предыдущей итерации цикла while)
 
 		try
 		{
@@ -277,7 +353,6 @@ void Engine::setting()
 		}
 	}
 
-
 }
 
 
@@ -289,9 +364,9 @@ int Engine::getUserMenuInput()
 
 void Engine::drawGame()
 {
-	m_Window.draw(m_Hero.getHeroSprite());  //// рисуем фигуру героя
+	m_Window.draw(m_Hero.getHeroSprite());  //// Рисуем фигуру героя
 
-	for (int i = 0; i < numEnemy * lineEnemy; ++i)   /// рисует врагов 
+	for (int i = 0; i < numEnemy * lineEnemy; ++i)   /// Рисуем врагов 
 	{
 		if (m_Enemy[i] != nullptr)
 		{
@@ -299,7 +374,7 @@ void Engine::drawGame()
 		}
 	}
 
-	for (int i = 0; i < numLaser; ++i)
+	for (int i = 0; i < numLaser; ++i)		// Рисуем лазеры
 	{
 		if (m_Hero.getLaser(i) != nullptr)
 		{
@@ -318,12 +393,12 @@ void Engine::drawMenu()
 void Engine::drawSetting()
 {
 	Rect<float> temp;
-	float PositionX, PositionY = VideoMode::getDesktopMode().height, resolution = VideoMode::getDesktopMode().width;
+	float PositionX, PositionY = VideoMode::getDesktopMode().height, resolution = VideoMode::getDesktopMode().width;		// Разрешение экрана
 	Color SpaseBlue(63, 72, 204);
 	Font font;
 	font.loadFromFile("gameFont.ttf");
 
-
+	// Надписи в настройках
 	Text text1("Setting", font);
 	text1.setFillColor(SpaseBlue);
 	temp = text1.getGlobalBounds();
@@ -374,7 +449,6 @@ void Engine::drawSetting()
 	PositionY += text8.getCharacterSize() * 1.5;
 
 
-
 	m_Window.draw(text1);
 	m_Window.draw(text2);
 	m_Window.draw(text3);
@@ -389,33 +463,17 @@ void Engine::drawSetting()
 void Engine::updateGameWindow(float dtAsSeconds)
 {
 	int ifGameOver = 1;
+	// Обновляем героя
 	m_Hero.update(dtAsSeconds);
-
-
+	// Обновляем всех существующих мобов
 	for (int i = 0; i < numEnemy * lineEnemy; ++i)
 	{
 		if (m_Enemy[i] != nullptr)
 		{
-			ifGameOver = m_Enemy[i]->update(dtAsSeconds);
-			if (ifGameOver == ShowMenu)
-			{
-				/// если кто-то перечек черту, то поражение, очищаем память и надо добавить окно поражения
-				m_userMenuInput = ShowMenu;
-				for (int i = 0; i < numEnemy * lineEnemy; ++i)
-				{
-					if (m_Enemy[i] != nullptr)
-					{
-						delete m_Enemy[i];
-					}
-					m_Enemy[i] = nullptr;
-				}
-				m_changeWindow = true;
-				//m_Window.close();
-				showMessage("You lose :(");
-				break;
-			}
+			m_Enemy[i]->update(dtAsSeconds);
 		}
 	}
+	// Обновляем все существующие лазеры
 	for (int i = 0; i < numLaser; ++i)
 	{
 		if (m_Hero.getLaser(i) != nullptr)
@@ -445,8 +503,7 @@ void Engine::inputInGame()
 	{
 		m_userMenuInput = ShowMenu;
 		m_changeWindow = true;
-		//m_Window.close();
-		sleep(timeDelayEscape);
+		sleep(timeDelayEscape);		// чтобы сразу не вылететь из игры
 	}
 
 	// Обрабатываем нажатие клавиш движения
@@ -507,29 +564,26 @@ void Engine::inputInMenu()
 		Vector2i mousePosition(Mouse::getPosition());
 		if ((mousePosition.x > 910) and (mousePosition.x < 1030) and (mousePosition.y > 640) and (mousePosition.y < 700))		// (910, 640)   (1030, 700)
 		{
-			m_userMenuInput = Exit;
+			m_userMenuInput = Exit;		// нажали на кнопку, значит меняем окно на рабочий стол (закрываем наше)
 			m_changeWindow = true;
 			m_Window.close();
 		}
 		if ((mousePosition.x > 850) and (mousePosition.x < 1110) and (mousePosition.y > 410) and (mousePosition.y < 480))		// (850, 410) (1110, 480)
 		{
-			m_userMenuInput = StartGame;
+			m_userMenuInput = StartGame;		// нажали на кнопку, значит меняем окно
 			m_changeWindow = true;
-			//m_Window.close();
 		}
 		if ((mousePosition.x > 890) and (mousePosition.x < 1070) and (mousePosition.y > 540) and (mousePosition.y < 600))		// (890, 540)  (1070, 600)
 		{
-			m_userMenuInput = OpenSetting;
+			m_userMenuInput = OpenSetting;		// нажали на кнопку, значит меняем окно
 			m_changeWindow = true;
-			//m_Window.close();
 		}
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Escape))
 	{
 		m_userMenuInput = 0;
 		m_changeWindow = true;
-		//m_Window.close();
-		sleep(timeDelayEscape);
+		sleep(timeDelayEscape);		// чтобы сразу не вылететь из игры
 	}
 }
 
@@ -544,7 +598,7 @@ void Engine::inputInSetting()
 		resolution.y = VideoMode::getDesktopMode().height / 5;
 		Vector2i mousePosition(Mouse::getPosition());
 
-		if ((mousePosition.x > resolution.x / 4) and (mousePosition.x < resolution.x / 4 + 150))
+		if ((mousePosition.x > resolution.x / 4) and (mousePosition.x < resolution.x / 4 + 200))		// проверка на нажатие в зонах
 		{
 			if ((mousePosition.y > resolution.y + 90) and (mousePosition.y < resolution.y + 120))
 			{
@@ -578,20 +632,13 @@ void Engine::inputInSetting()
 			}
 		}
 
-
-
-
-
-
 	}
-
 
 	if (Keyboard::isKeyPressed(Keyboard::Escape))
 	{
 		m_userMenuInput = ShowMenu;
 		m_changeWindow = true;
-		//m_Window.close();
-		sleep(timeDelayEscape);
+		sleep(timeDelayEscape);		// чтобы сразу не вылететь из игры
 	}
 }
 
@@ -851,6 +898,7 @@ Keyboard::Key Engine::returnPressedKey()
 	m_Window.draw(text);
 	drawSetting();
 	m_Window.display();
+	// Ждем пока не нажмут какую-нибудь из клавиш
 	while (temp == Keyboard::Key::Unknown)
 	{
 		temp = pressedButtom();
@@ -1101,29 +1149,34 @@ std::string Engine::pressedButtomAsString(Keyboard::Key key)
 }
 
 
-void Engine::showMessage(std::string message)
+void Engine::showMessage(std::string message)		// выводит сообщение на экран
 {
 	Font font;
 	font.loadFromFile("gameFont.ttf");
 	Text text(message, font);
 	text.setFillColor(Color::Red);
-	text.setPosition(VideoMode::getDesktopMode().width / 2.3, VideoMode::getDesktopMode().height / 2.5);
+	text.setPosition(VideoMode::getDesktopMode().width / 2.3, VideoMode::getDesktopMode().height / 2.5);		// по центру
 	text.setCharacterSize(50);
 	Text text1("Press Escape", font);
 	text1.setFillColor(Color::White);
-	text1.setPosition(VideoMode::getDesktopMode().width / 4, VideoMode::getDesktopMode().height * 0.9);
+	text1.setPosition(VideoMode::getDesktopMode().width / 4, VideoMode::getDesktopMode().height * 0.9);			// внизу слева
 
 	m_Window.clear(Color::White);
 	m_Window.draw(m_BackgroundSprite);
 	m_Window.draw(text);
 	m_Window.draw(text1);
-	
 	m_Window.display();
+
+	// Ждём пока не нажмут Escape
 	while (!Keyboard::isKeyPressed(Keyboard::Key::Escape))
 	{
+
 	}
-	sleep(timeDelayEscape);
+	sleep(timeDelayEscape);  // Чтобы не вылетел из меню
 }
+
+
+
 
 
 

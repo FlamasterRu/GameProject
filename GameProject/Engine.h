@@ -4,7 +4,7 @@
 #include "Enemy.h"
 #include <string>
 
-/// + координаты верхнего левого угла кнопки и левого нижнего
+/// + координаты верхнего левого угла кнопки и левого нижнего на картинке menu.png
 enum userInput
 {
 	Exit,			// Выйти из игры 0     (910, 640)   (1030, 700)
@@ -14,7 +14,7 @@ enum userInput
 };
 
 
-const int numEnemy = 1;
+const int numEnemy = 10;
 const int lineEnemy = 3;
 const Time timeDelayEscape = seconds(0.3);   // чтобы сразу не выключить игру, так как пользователь не моментально отпускает кнопку Esc
 
@@ -59,19 +59,19 @@ private:
 
 
 
-	void input();
+	void input();		// пользовательский ввод
 	void inputInGame();
 	void inputInMenu();
 	void inputInSetting();
-	void update(float dtAsSeconds);
+	void update(float dtAsSeconds);		// обновление игры на каждый кадр
 	void updateGameWindow(float dtAsSeconds);
 	void updateMenuWindow(float dtAsSeconds);
 	void updateSettingWindow(float dtAsSeconds);
-	void draw();
+	void draw();		// функции отрисовки произошедшего в кадре
 	void drawGame();
 	void drawMenu();
 	void drawSetting();
-	void check();
+	void check();		// проверка условий окончания игры
 	Keyboard::Key pressedButtom();
 	std::string pressedButtomAsString(Keyboard::Key key);
 	Keyboard::Key returnPressedKey();
@@ -82,7 +82,7 @@ public:
 	Engine();
 	~Engine();
 
-	// Функция старт вызовет все приватные функции
+	// Функции для пунктов меню, которые вызовут приватные функции
 	void start();
 
 	void menu();

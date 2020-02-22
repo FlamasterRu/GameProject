@@ -17,8 +17,8 @@ Hero::Hero()
 	}
 
 	// Устанавливаем начальную позицию в пикселях
-	m_Position.x = 925;
-	m_Position.y = 800;
+	m_Position.x = VideoMode::getDesktopMode().width / 2.08;
+	m_Position.y = VideoMode::getDesktopMode().height / 1.35;
 
 	m_BotPressed = false;
 	m_TopPressed = false;
@@ -27,8 +27,6 @@ Hero::Hero()
 	m_GoFire = false;
 
 	m_LastFire = 1000.0;
-
-	m_Health = 3;
 
 }
 
@@ -42,7 +40,6 @@ Hero::~Hero()
 		}
 	}
 }
-
 
 
 
@@ -116,6 +113,19 @@ void Hero::setLaserNullptr(int num)
 }
 
 
+void Hero::setPosition(Vector2f position)
+{
+	m_Position = position;
+}
+
+
+void Hero::setPosition(float positionX, float positionY)
+{
+	m_Position.x = positionX;
+	m_Position.y = positionY;
+}
+
+
 
 
 
@@ -135,20 +145,16 @@ Laser* Hero::getLaser(int num)
 
 
 
-
-
-
-
 // Двигаем на основании пользовательского ввода в этом кадре, прошедшего времени и скорости
 void Hero::update(float elapsedTime)
 {
-	float maxX = VideoMode::getDesktopMode().width;     ///// не знаю почему но фактические размеры в столько то раз меньше
+	float maxX = VideoMode::getDesktopMode().width;		// Разрешение экрана
 	float maxY = VideoMode::getDesktopMode().height;
 	maxX -= m_Texture.getSize().x;
 	maxY -= m_Texture.getSize().y;
 	if (m_RightPressed)
 	{
-		if (m_Position.x + m_Speed * elapsedTime < maxX)    	// Чтобы не выходил за пределы монитора. Фактический размер, который отрисовывает библиотека в 2 раза меньше разрешения экрана
+		if (m_Position.x + m_Speed * elapsedTime < maxX)    	// Чтобы не выходил за пределы монитора
 		{
 			m_Position.x += m_Speed * elapsedTime;
 		}
@@ -164,7 +170,7 @@ void Hero::update(float elapsedTime)
 
 	if (m_TopPressed)
 	{
-		if (m_Position.y - m_Speed * elapsedTime > 650)
+		if (m_Position.y - m_Speed * elapsedTime > 0)
 		{
 			m_Position.y -= m_Speed * elapsedTime;
 		}
@@ -201,7 +207,7 @@ void Hero::fire()
 	{
 		if (m_laser[i] == nullptr)
 		{
-			++freeLaser;                  //////////////////// считаем сколько выстрелов можно сделать до переполнения буфера лазеров
+			++freeLaser;                  // Считаем сколько выстрелов можно сделать до переполнения буфера лазеров
 		}
 	}
 	if (freeLaser <= 0)
@@ -210,12 +216,12 @@ void Hero::fire()
 	}
 	else
 	{
-		for (i = 0; m_laser[i] != nullptr; ++i);
+		for (i = 0; m_laser[i] != nullptr; ++i);		// Перемещаем счётчик на первый свободный слот(ячейку массива) под лазер
 		Vector2f temp;
-		temp.y = m_Position.y;
 		m_laser[i] = new Laser();
-		temp.x = m_Position.x + m_Texture.getSize().x / 2 - m_laser[i]->getLaserSprite().getTexture()->getSize().x / 2;
-		temp.y = m_Position.y - m_laser[i]->getLaserSprite().getTexture()->getSize().y;
+		temp.y = m_Position.y;
+		temp.x = m_Position.x + m_Texture.getSize().x / 2 - m_laser[i]->getLaserSprite().getTexture()->getSize().x / 2;		// Примерно по центру корабля героя
+		temp.y = m_Position.y - m_laser[i]->getLaserSprite().getTexture()->getSize().y;		// Сдвигаемся чуть ниже носа корабля
 		m_laser[i]->setPosition(temp);
 	}
 
@@ -223,7 +229,10 @@ void Hero::fire()
 
 
 
-
+Vector2f Hero::getPosition()
+{
+	return m_Position;
+}
 
 
 

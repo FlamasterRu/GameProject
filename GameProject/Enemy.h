@@ -5,8 +5,8 @@
 using namespace sf;
 
 
-const int enemySpeedX = 50;
-const int enemySpeedY = 50;
+const int enemySpeedX = 60;
+const int enemySpeedY = 3;
 
 
 
@@ -14,18 +14,14 @@ class Enemy
 {
 private:
 
-	int e_Health;
-	int e_Damage;
-
 	Vector2f e_Position;  //// Координаты левого верхнего угла примоугольника, который описывает фигурку врага
+
 	Vector2f e_XRange;   /// координаты, в которых моб разворачивается
 	Vector2f e_YRange;
-
 
 	Sprite e_Sprite;
 
 	Texture e_Texture;
-
 
 	Vector2f e_Speed;   // скорость движения в пикселях в секунду по оси Х
 					   // скорость движения в пикселях в секунду по оси Y
@@ -38,11 +34,8 @@ public:
 
 
 
-
 	void setPosition(Vector2f position);
 	void setPosition(float x, float y);
-	void setHealth(int health);
-	void setDamage(int damage);
 	void setXRange(Vector2f xRange);
 	void setXRange(float xLeft, float xRight);
 	void setYRange(Vector2f yRange);
@@ -53,7 +46,7 @@ public:
 	Sprite getEnemySprite();
 
 
-	int update(float elapsedTime);  	// Эта функция будет вызываться на каждый кадр
+	void update(float elapsedTime);  	// Эта функция будет вызываться на каждый кадр
 
 };
 

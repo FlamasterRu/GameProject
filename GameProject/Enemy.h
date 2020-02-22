@@ -5,8 +5,8 @@
 using namespace sf;
 
 
-const int enemySpeedX = 60;
-const int enemySpeedY = 3;
+const int enemySpeedX = 90;
+const int enemySpeedY = 8;
 
 
 

@@ -13,6 +13,7 @@ To solve this problem:
 3) Apply the changes.
 
 
+------------------------------------------------------------------------------------------------
 Screen resolution 1920*1080.
 
 Default control:
@@ -22,4 +23,4 @@ Down: s
 Left: a
 Right: d
 
-Fire: Spase
+Fire: Space

@@ -14,7 +14,7 @@ enum userInput
 };
 
 
-const int numEnemy = 10;
+const int numEnemy = 1;
 const int lineEnemy = 3;
 const Time timeDelayEscape = seconds(0.3);   // чтобы сразу не выключить игру, так как пользователь не моментально отпускает кнопку Esc
 
@@ -72,10 +72,10 @@ private:
 	void drawMenu();
 	void drawSetting();
 	void check();
-	std::string keyToString(Keyboard::Key key);
 	Keyboard::Key pressedButtom();
 	std::string pressedButtomAsString(Keyboard::Key key);
 	Keyboard::Key returnPressedKey();
+	void showMessage(std::string message);
 
 public:
 

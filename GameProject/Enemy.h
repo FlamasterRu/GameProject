@@ -6,7 +6,7 @@ using namespace sf;
 
 
 const int enemySpeedX = 50;
-const int enemySpeedY = 2;
+const int enemySpeedY = 50;
 
 
 

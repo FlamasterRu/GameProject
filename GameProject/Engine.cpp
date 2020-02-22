@@ -41,10 +41,6 @@ Engine::Engine()
 }
 
 
-
-
-
-
 Engine::~Engine()
 {
 	for (int i = 0; i < numEnemy * lineEnemy; ++i)
@@ -55,11 +51,6 @@ Engine::~Engine()
 		}
 	}
 }
-
-
-
-
-
 
 
 void Engine::start()
@@ -113,16 +104,14 @@ void Engine::start()
 			m_Window.close();
 		}
 	}
+	for (int i = 0; i < numEnemy * lineEnemy; ++i)
+	{
+		if (m_Enemy[i] != nullptr)
+		{
+			delete m_Enemy[i];
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
 
 
 void Engine::check()
@@ -200,11 +189,10 @@ void Engine::check()
 	{
 		m_userMenuInput = ShowMenu;
 		m_changeWindow = true;
+		showMessage("You Win!");
 		//m_Window.close();
 	}
 }
-
-
 
 
 void Engine::menu()
@@ -246,7 +234,6 @@ void Engine::menu()
 	}
 
 }
-
 
 
 void Engine::setting()
@@ -300,7 +287,6 @@ int Engine::getUserMenuInput()
 }
 
 
-
 void Engine::drawGame()
 {
 	m_Window.draw(m_Hero.getHeroSprite());  //// рисуем фигуру героя
@@ -323,13 +309,10 @@ void Engine::drawGame()
 }
 
 
-
-
 void Engine::drawMenu()
 {
 
 }
-
 
 
 void Engine::drawSetting()
@@ -403,7 +386,6 @@ void Engine::drawSetting()
 }
 
 
-
 void Engine::updateGameWindow(float dtAsSeconds)
 {
 	int ifGameOver = 1;
@@ -429,6 +411,7 @@ void Engine::updateGameWindow(float dtAsSeconds)
 				}
 				m_changeWindow = true;
 				//m_Window.close();
+				showMessage("You lose :(");
 				break;
 			}
 		}
@@ -443,7 +426,6 @@ void Engine::updateGameWindow(float dtAsSeconds)
 }
 
 
-
 void Engine::updateMenuWindow(float dtAsSeconds)
 {
 
@@ -454,7 +436,6 @@ void Engine::updateSettingWindow(float dtAsSeconds)
 {
 
 }
-
 
 
 void Engine::inputInGame()
@@ -519,7 +500,6 @@ void Engine::inputInGame()
 }
 
 
-
 void Engine::inputInMenu()
 {
 	if (Mouse::isButtonPressed(Mouse::Left))
@@ -552,7 +532,6 @@ void Engine::inputInMenu()
 		sleep(timeDelayEscape);
 	}
 }
-
 
 
 void Engine::inputInSetting()
@@ -615,16 +594,6 @@ void Engine::inputInSetting()
 		sleep(timeDelayEscape);
 	}
 }
-
-
-
-std::string Engine::keyToString(Keyboard::Key key)
-{
-
-	return "5";
-}
-
-
 
 
 Keyboard::Key Engine::pressedButtom()
@@ -868,18 +837,13 @@ Keyboard::Key Engine::pressedButtom()
 }
 
 
-
-
-
-
 Keyboard::Key Engine::returnPressedKey()
 {
 	Keyboard::Key temp = Keyboard::Key::Unknown;
-	Color SpaseBlue(63, 72, 204);
 	Font font;
 	font.loadFromFile("gameFont.ttf");
 	Text text("Press Key", font);
-	text.setFillColor(SpaseBlue);
+	text.setFillColor(Color::White);
 	text.setPosition(VideoMode::getDesktopMode().width / 4, VideoMode::getDesktopMode().height * 0.9);
 
 	m_Window.clear(Color::White);
@@ -894,7 +858,6 @@ Keyboard::Key Engine::returnPressedKey()
 	return temp;
 
 }
-
 
 
 std::string Engine::pressedButtomAsString(Keyboard::Key key)
@@ -1138,8 +1101,29 @@ std::string Engine::pressedButtomAsString(Keyboard::Key key)
 }
 
 
+void Engine::showMessage(std::string message)
+{
+	Font font;
+	font.loadFromFile("gameFont.ttf");
+	Text text(message, font);
+	text.setFillColor(Color::Red);
+	text.setPosition(VideoMode::getDesktopMode().width / 2.3, VideoMode::getDesktopMode().height / 2.5);
+	text.setCharacterSize(50);
+	Text text1("Press Escape", font);
+	text1.setFillColor(Color::White);
+	text1.setPosition(VideoMode::getDesktopMode().width / 4, VideoMode::getDesktopMode().height * 0.9);
 
-
+	m_Window.clear(Color::White);
+	m_Window.draw(m_BackgroundSprite);
+	m_Window.draw(text);
+	m_Window.draw(text1);
+	
+	m_Window.display();
+	while (!Keyboard::isKeyPressed(Keyboard::Key::Escape))
+	{
+	}
+	sleep(timeDelayEscape);
+}
 
 
 

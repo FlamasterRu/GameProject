@@ -90,6 +90,7 @@ void Engine::start()
 
 		try
 		{
+			system("NULL");
 			input();
 			update(dtAsSeconds);
 			check();
@@ -307,6 +308,7 @@ void Engine::menu()
 
 		try
 		{
+			system("NULL");
 			draw();
 			input();
 		}
@@ -344,6 +346,7 @@ void Engine::setting()
 
 		try
 		{
+			system("NULL");
 			draw();
 			input();
 		}
